@@ -2,7 +2,7 @@ from functools import singledispatch
 from typing import Dict
 
 from IndustrialAPI.actors_api_lmdp_ltlf.data import ServiceInstance, TargetInstance
-from aida.custom_types import MDPDynamics
+from lmdp.custom_types import MDPDynamics
 
 
 class Message:

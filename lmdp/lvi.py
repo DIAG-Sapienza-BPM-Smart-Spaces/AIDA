@@ -10,9 +10,9 @@ import numpy as np
 from mdp_dp_rl.processes.mdp import MDP
 from numpy.typing import NDArray
 
-from aida.custom_types import Action, State
-from aida.dfa_target import MdpDfa
-from aida.lmdp import LMDP
+from lmdp.custom_types import Action, State
+from lmdp.dfa_target import MdpDfa
+from lmdp.lmdp import LMDP
 
 
 def value_iteration(

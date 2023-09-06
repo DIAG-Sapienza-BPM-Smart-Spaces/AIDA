@@ -1,4 +1,4 @@
-from local.aida_utils import AIDAUtils
+from local.lmdp_utils import LmdpUtils
 import time
 import subprocess
 import signal
@@ -14,7 +14,7 @@ time.sleep(5)
 launch_devices_path = "IndustrialAPI/launch_devices.py"
 p2 = subprocess.Popen([f"python {launch_devices_path}"], shell=True)
 
-aida = AIDAUtils("IndustrialAPI/actors_api_lmdp_ltlf/descriptions/target.tdl")
+aida = LmdpUtils("IndustrialAPI/actors_api_lmdp_ltlf/descriptions/target.tdl")
 
 while True:
     loop = asyncio.get_event_loop().run_until_complete(aida.get_services())

@@ -1,10 +1,10 @@
-from local.alto_utils import ALTOUtils
+from local.planning_utils import PlanningUtils
 import time
 import subprocess
 import signal
 import os
 import asyncio
-from alto.actorsAPI import *
+from planning.actorsAPI import *
 
 
 app_path = "../IndustrialAPI/actors_api_plan/app.py"
@@ -17,7 +17,7 @@ folder = "../GUI/saved_models/plan_case1"
 mode = "plan"
 p2 = subprocess.Popen([f"xterm -e python {launch_devices_path} {folder} {mode}"], shell=True)
 
-alto = ALTOUtils("../GUI/saved_models/plan_case1/target.tdl")
+alto = PlanningUtils("../GUI/saved_models/plan_case1/target.tdl")
 
 time.sleep(3)
 

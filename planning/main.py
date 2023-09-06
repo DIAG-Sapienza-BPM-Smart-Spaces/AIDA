@@ -2,12 +2,12 @@ import asyncio
 import json
 import config
 import subprocess
-from alto.buildPDDL import *
-from alto.config import *
+from planning.buildPDDL import *
+from planning.config import *
 import requests
-from alto.actorsAPI import *
+from planning.actorsAPI import *
 from IndustrialAPI.actors_api_plan.client_wrapper import ClientWrapper
-from alto.actorsAPI import *
+from planning.actorsAPI import *
 
 import cProfile
 import pstats

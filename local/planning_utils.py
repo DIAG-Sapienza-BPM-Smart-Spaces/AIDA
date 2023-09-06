@@ -2,14 +2,14 @@
 from typing import List
 from pathlib import Path
 
-from alto.buildPDDL import *
-from alto.config import *
-from alto.actorsAPI import *
+from planning.buildPDDL import *
+from planning.config import *
+from planning.actorsAPI import *
 
 import subprocess
 
 
-class ALTOUtils:
+class PlanningUtils:
 
     def __init__(self, target):
         self.target = target

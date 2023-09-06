@@ -5,7 +5,7 @@ from tkinter import END
 from tkinter import messagebox as msgbox
 from PIL import ImageTk, Image #EXTRA LIBRARY --> pip install pillow
 import json
-from local.aida_utils import AIDAUtils
+from local.lmdp_utils import LmdpUtils
 import time
 import subprocess
 import asyncio
@@ -119,7 +119,7 @@ class RunTimePage_lmdp(tk.Frame):
         time.sleep(3)
 
         target = os.path.abspath(f"{folder}/{target_file}")
-        self.aida = AIDAUtils(target)
+        self.aida = LmdpUtils(target)
 
         asyncio.get_event_loop().run_until_complete(self.aida.compute_policy())
 

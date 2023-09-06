@@ -6,8 +6,8 @@ from pathlib import Path
 import sys
 import json
 
-from aida.declare_utils import *
-from aida.dfa_target import from_symbolic_automaton_to_declare_automaton, mdp_from_dfa
+from lmdp.declare_utils import *
+from lmdp.dfa_target import from_symbolic_automaton_to_declare_automaton, mdp_from_dfa
 from IndustrialAPI.utils.utils import render_mdp_dfa
 
 

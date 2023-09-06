@@ -1,4 +1,4 @@
-from alto.PDDLUtils import *
+from planning.PDDLUtils import *
 
 class Description:
     def __init__(self,services,capabilities,

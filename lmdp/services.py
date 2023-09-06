@@ -1,7 +1,7 @@
 """This module contains the implementation of the service abstraction."""
 from collections import deque
 from typing import Deque, Set, Tuple, Optional
-from aida.custom_types import (
+from lmdp.custom_types import (
     Action,
     MDPDynamics,
     State,

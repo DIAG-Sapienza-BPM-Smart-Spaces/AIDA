@@ -3,18 +3,18 @@ from typing import List
 from pathlib import Path
 
 from mdp_dp_rl.processes.det_policy import DetPolicy
-from aida.lmdp import LMDP
+from lmdp.lmdp import LMDP
 
-from aida.constants import GAMMAS
-from aida.lvi import lexicographic_value_iteration
+from lmdp.constants import GAMMAS
+from lmdp.lvi import lexicographic_value_iteration
 from IndustrialAPI.run_target_lmdp_ltlf import target_dfa, TargetDFA
 
 from IndustrialAPI.actors_api_lmdp_ltlf.client_wrapper import ClientWrapper
 from IndustrialAPI.actors_api_lmdp_ltlf.data import ServiceInstance
-from aida.lmdp import compute_composition_lmdp
+from lmdp.lmdp import compute_composition_lmdp
 
 
-class AIDAUtils:
+class LmdpUtils:
 
     def __init__(self, dfa_path):
         self.client = ClientWrapper("localhost", 8080)

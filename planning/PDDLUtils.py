@@ -1,4 +1,4 @@
-import alto.context as context
+import planning.context as context
 
 def getInit(groundAtomicTerms, tasks):
     res = "(:init \n"

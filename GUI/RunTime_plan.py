@@ -5,7 +5,7 @@ from tkinter import END
 from tkinter import messagebox as msgbox
 from PIL import ImageTk, Image #EXTRA LIBRARY --> pip install pillow
 import json
-from local.alto_utils import ALTOUtils
+from local.planning_utils import ALTOUtils
 import time
 import subprocess
 import asyncio

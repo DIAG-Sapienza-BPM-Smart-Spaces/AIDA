@@ -1,6 +1,6 @@
-from alto.description import *
-from alto.actorsAPI import *
-import alto.context
+from planning.description import *
+from planning.actorsAPI import *
+import planning.context as context
 
 def buildInstances(services):
     instances = {}
