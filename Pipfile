@@ -1,0 +1,52 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+pytest = "*"
+pytest-cov = "*"
+pytest-randomly = "*"
+tox = "*"
+ipython = "*"
+jupyter = "*"
+flake8 = "*"
+flake8-bugbear = "*"
+flake8-docstrings = "*"
+flake8-eradicate = "*"
+flake8-isort = "*"
+pydocstyle = "*"
+black = "*"
+isort = "*"
+pytest-lazy-fixture = "*"
+mypy = "*"
+hypothesis = "*"
+mkdocs = "*"
+mkdocs-material = "*"
+markdown-include = "*"
+pymdown-extensions = "*"
+markdown = "*"
+mknotebooks = "*"
+mkdocs-bibtex = "*"
+tk = "*"
+pillow = "*"
+opencv-python = "*"
+openapi-python-client = "*"
+numpy = "*"
+graphviz = "*"
+websockets = "*"
+paho-mqtt = "*"
+requests = "*"
+logaut = "*"
+pythomata = "*"
+networkx = "*"
+pydotplus = "*"
+datetime = "*"
+connexion = {extras = ["swagger-ui"], version = "*"}
+aiohttp-jinja2 = "*"
+mdp-dp-rl = {editable = true, git = "https://github.com/luusi/mdp-dp-rl.git"}
+
+[dev-packages]
+
+[requires]
+python_version = "3.10"
