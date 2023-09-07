@@ -4,16 +4,16 @@ from pathlib import Path
 import json
 
 from mdp_dp_rl.processes.det_policy import DetPolicy
-from aida.lmdp import LMDP
+from lmdp.lmdp import LMDP
 
-from aida.constants import GAMMAS
-from aida.lvi import lexicographic_value_iteration
-from IndustrialAPI.run_target_lmdp_ltlf import target_dfa, TargetDFA
+from lmdp.constants import GAMMAS
+from lmdp.lvi import lexicographic_value_iteration
+from IndustrialAPI.run_target_ltlf import target_dfa, TargetDFA
 
 from IndustrialAPI.actors_api_lmdp_ltlf.client_wrapper import ClientWrapper
 from IndustrialAPI.actors_api_lmdp_ltlf.data import ServiceInstance
 from IndustrialAPI.actors_api_lmdp_ltlf.helpers import setup_logger
-from aida.lmdp import compute_composition_lmdp
+from lmdp.lmdp import compute_composition_lmdp
 
 logger = setup_logger("orchestrator")
 

@@ -3,18 +3,17 @@ from typing import List
 from pathlib import Path
 
 from mdp_dp_rl.processes.det_policy import DetPolicy
-from lmdp.lmdp import LMDP
+from mdp_dp_rl.processes.mdp import MDP
+from mdp_dp_rl.algorithms.dp.dp_analytic import DPAnalytic
 
-from lmdp.constants import GAMMAS
-from lmdp.lvi import lexicographic_value_iteration
+from mdp import composition_mdp
 from IndustrialAPI.run_target_ltlf import target_dfa, TargetDFA
 
-from IndustrialAPI.actors_api_lmdp_ltlf.client_wrapper import ClientWrapper
-from IndustrialAPI.actors_api_lmdp_ltlf.data import ServiceInstance
-from lmdp.lmdp import compute_composition_lmdp
+from IndustrialAPI.actors_api_mdp.client_wrapper import ClientWrapper
+from IndustrialAPI.actors_api_mdp.data import ServiceInstance
 
 
-class LmdpUtils:
+class MdpUtils:
 
     def __init__(self, dfa_path):
         self.client = ClientWrapper("localhost", 8080)
@@ -38,10 +37,14 @@ class LmdpUtils:
     
     async def compute_policy(self):
         services = await self.get_services()
-        lmdp: LMDP = compute_composition_lmdp(self.dfa_target, [service.current_service_spec for service in services], GAMMAS)
+        mdp: MDP = composition_mdp(self.dfa_target, [service.current_service_spec for service in services], gamma=0.9)
         # set tolerance to stop value iteration earlier for faster convergence
-        result_vf, actions = lexicographic_value_iteration(lmdp, tol=1e-5)
-        self.policy = DetPolicy({s: list(opt_actions_from_s)[0] for s, opt_actions_from_s in actions.items()})
+        out = mdp.get_optimal_policy()
+        opn = DPAnalytic(mdp, 1e-4)
+        self.policy = opn.get_optimal_policy_vi()
+        #value_function = opn.get_value_func_dict(opt_policy) # value function
+        #q_value_function = opn.get_act_value_func_dict(opt_policy)
+        #self.policy = DetPolicy({s: list(opt_actions_from_s)[0] for s, opt_actions_from_s in opt_policy.items()})
 
     async def get_current_system_state(self):
         services = await self.get_services()
@@ -80,7 +83,7 @@ class LmdpUtils:
         service_id, current_state, new_state, recompute = await self.execute_action(service_index, target_action)
         self.update_dfa_target(target_action)
         if recompute == 0:
-            await self.recompute_lmdp()
+            await self.recompute_mdp()
         if await self.check_execution_finished():
             self.set_targetDFA()
             return service_id, current_state, new_state, target_action, True
@@ -95,7 +98,7 @@ class LmdpUtils:
             return True
         return False
     
-    async def recompute_lmdp(self):
+    async def recompute_mdp(self):
         await self.compute_policy()
 
 
