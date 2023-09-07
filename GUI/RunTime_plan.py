@@ -5,7 +5,7 @@ from tkinter import END
 from tkinter import messagebox as msgbox
 from PIL import ImageTk, Image #EXTRA LIBRARY --> pip install pillow
 import json
-from local.planning_utils import ALTOUtils
+from local.planning_utils import PlanningUtils
 import time
 import subprocess
 import asyncio
@@ -119,7 +119,7 @@ class RunTimePage_plan(tk.Frame):
         time.sleep(3)
 
         target = os.path.abspath(f"{folder}/{target_file}")
-        self.alto = ALTOUtils(target)
+        self.alto = PlanningUtils(target)
 
         asyncio.get_event_loop().run_until_complete(self.alto.compute_plan())
 
@@ -246,7 +246,7 @@ class RunTimePage_plan(tk.Frame):
         time.sleep(2)
 
         target = os.path.abspath(f"{folder}/{target_file}")
-        self.alto = ALTOUtils(target)
+        self.alto = PlanningUtils(target)
 
         asyncio.get_event_loop().run_until_complete(self.alto.compute_plan())
 

@@ -70,7 +70,7 @@ sudo apt install python3-tk
 
 - Install [Fast Downward](https://github.com/aibasel/downward) planner:
 ```bash
-cd alto
+cd planning
 git clone https://github.com/aibasel/downward.git
 cd downward
 ./build.py
@@ -78,11 +78,11 @@ cd downward
 
 - Generate Python client from OpenAPI v3.0 specification (maybe you need to change permissions of the script file):
 ```bash
-cd local/IndustrialAPI/actors_api_lmdp_ltlf/openapi_client_script
+cd IndustrialAPI/actors_api_lmdp_ltlf/openapi_client_script
 # chmod 777 generate-openapi-client.sh
 ./generate-openapi-client.sh
 
-cd local/IndustrialAPI/actors_api_plan/openapi_client_script
+cd IndustrialAPI/actors_api_plan/openapi_client_script
 # chmod 777 generate-openapi-client.sh
 ./generate-openapi-client.sh
 ```
