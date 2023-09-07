@@ -45,6 +45,7 @@ datetime = "*"
 connexion = {extras = ["swagger-ui"], version = "*"}
 aiohttp-jinja2 = "*"
 mdp-dp-rl = {editable = true, git = "https://github.com/luusi/mdp-dp-rl.git"}
+grequests = "*"
 
 [dev-packages]
 
