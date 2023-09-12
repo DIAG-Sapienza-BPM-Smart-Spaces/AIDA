@@ -5,7 +5,7 @@ from tkinter import END
 from tkinter import messagebox as msgbox
 from PIL import ImageTk, Image #EXTRA LIBRARY --> pip install pillow
 import json
-from local.planning_utils import PlanningUtils
+from local.mdp_utils import MdpUtils
 import time
 import subprocess
 import asyncio
@@ -16,7 +16,7 @@ import threading
 import queue
 
 
-class RunTimePage_plan(tk.Frame):
+class RunTimePage_mdp(tk.Frame):
     def __init__(self, parent, controller):
         self.config_file = ''
         self.service_map = {}
@@ -119,9 +119,9 @@ class RunTimePage_plan(tk.Frame):
         time.sleep(3)
 
         target = os.path.abspath(f"{folder}/{target_file}")
-        self.aida = PlanningUtils(target)
+        self.aida = MdpUtils(target)
 
-        asyncio.get_event_loop().run_until_complete(self.aida.compute_plan())
+        asyncio.get_event_loop().run_until_complete(self.aida.compute_policy())
 
         self.startButton.config(state= "disabled")
         self.nextButton.config(state= "normal")
@@ -141,59 +141,45 @@ class RunTimePage_plan(tk.Frame):
         if self.initialRun:
             self.insert_text(f"RUN {self.n_runs}\n")
             self.initialRun = False
-        
-        res, action = await self.aida.next_step()
-        serviceId = action["service_id"]
-        cmd = action["command"]
-        if res == 1:
-            print("RES = 1")
-            self.service_map_action[serviceId][0]+=1
-            self.update_star(serviceId)
-            self.insert_text(f"{serviceId} : {cmd}\n")
-            self.planListBox.see(END)
-        elif res == -1:
-            print("RES = -1")
-            await self.aida.recompute_plan()
-            self.change_rect_color(serviceId, "broken")
-
-        finished = self.aida.check_terminated_plan()
+        service, previous_state, new_state, executed_action, finished = await self.aida.next_step()
+        if (previous_state == "executing" or previous_state == "ready") and (new_state == "ready" or new_state == "broken"):
+            self.service_map_action[service][0]+=1
+            self.update_star(service)
+        self.change_rect_color(service, new_state)
+        self.insert_text(f"{service} : {executed_action}\n\t{previous_state} -> {new_state}\n")
+        self.planListBox.see(END)
         if finished:
-            print("FINISHED")
             self.n_runs+=1
-            msgbox.showinfo(f"Run {self.n_runs-1}", f"Run {self.n_runs-1} finished!\nContinue to re-compute the plan...")
+            msgbox.showinfo(f"Run {self.n_runs-1}", f"Run {self.n_runs-1} finished!\nContinue to re-compute LMDP...")
             self.initialRun = True
-            self.resetServices()
+            await self.aida.recompute_lmdp()
     def next(self):
         asyncio.get_event_loop().run_until_complete(self._next())
+
 
     # method used in the immediate run and run methods
     async def _next_finished(self):
         if self.initialRun:
             self.insert_text(f"RUN {self.n_runs}\n")
             self.initialRun = False
-        res, action = await self.aida.next_step()
-        serviceId = action["service_id"]
-        cmd = action["command"]
-        if res == 1:
-            self.service_map_action[serviceId][0]+=1
-            self.update_star(serviceId)
-            self.insert_text(f"{serviceId} : {cmd}\n")
-            self.planListBox.see(END)
-        elif res == -1:
-            await self.aida.recompute_plan()
-            self.change_rect_color(serviceId, "broken")
-        
-        finished = self.aida.check_terminated_plan()
+        service, previous_state, new_state, executed_action, finished = await self.aida.next_step()
+        if (previous_state == "executing" or previous_state == "ready") and (new_state == "ready" or new_state == "broken"):
+            self.service_map_action[service][0]+=1
+            self.update_star(service)
+        self.change_rect_color(service, new_state)
+        self.insert_text(f"{service} : {executed_action}\n\t{previous_state} -> {new_state}\n")
+        self.planListBox.see(END)
         if finished:
-            print("FINISHED")
+            self.initialRun = True
             self.n_runs+=1
-            return 1
-        return 0
+            self.n_prob_mod+=1
+        return service, previous_state, new_state, executed_action, finished
+
 
     def _immediateRun_while(self):
         finished = False
         while not finished:
-            finished = asyncio.get_event_loop().run_until_complete(self._next_finished())
+            _,_,_,_,finished = asyncio.get_event_loop().run_until_complete(self._next_finished())
     def _immediateRun(self):
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
@@ -206,7 +192,7 @@ class RunTimePage_plan(tk.Frame):
     def _run_while(self):
         finished = False
         while not finished:
-            finished = asyncio.get_event_loop().run_until_complete(self._next_finished())
+            _,_,_,_,finished = asyncio.get_event_loop().run_until_complete(self._next_finished())
             time.sleep(1)
     def _run(self):
         loop = asyncio.new_event_loop()
@@ -222,40 +208,14 @@ class RunTimePage_plan(tk.Frame):
         if thread.is_alive():
             self.after(100, lambda: self.monitor(thread))
         else:
-            msgbox.showinfo(f"Run {self.n_runs-1}", f"Run {self.n_runs-1} finished!\nContinue to re-compute plan...")
-            self.initialRun = True
-            self.resetServices()
+            msgbox.showinfo(f"Run {self.n_runs-1}", f"Run {self.n_runs-1} finished!\nContinute to re-compute LMDP...")
+            self.recomputelmdp()
 
 
-    def resetServices(self):
-        os.killpg(os.getpgid(self.p1.pid), signal.SIGTERM)
-
-        config_json = json.load(open(self.config_file))
-        folder = config_json['folder']
-        mode = config_json['mode']
-        target_file = config_json['target_file']
-
-        app_path = f"../IndustrialAPI/actors_api_{mode}/app.py"
-        self.p1 = subprocess.Popen([f"xterm -e python {app_path}"], shell=True, preexec_fn=os.setsid)
-
-        time.sleep(1)
-
-        launch_devices_path = "../IndustrialAPI/launch_devices.py"
-        self.p2 = subprocess.Popen([f"xterm -e python {launch_devices_path} {folder} {mode}"], shell=True)
-
-        time.sleep(2)
-
-        target = os.path.abspath(f"{folder}/{target_file}")
-        self.aida = PlanningUtils(target)
-
-        asyncio.get_event_loop().run_until_complete(self.aida.compute_plan())
-
-        self.startButton.config(state= "disabled")
-        self.nextButton.config(state= "normal")
-        self.killButton.config(state= "normal")
-        self.immediateRunButton.config(state= "normal")
-        self.runButton.config(state= "normal")
-        self.disruptionButton.config(state= "normal")
+    async def _recomputelmdp(self):
+        await self.aida.recompute_lmdp()
+    def recomputelmdp(self):
+        asyncio.get_event_loop().run_until_complete(self._recomputelmdp())
 
 
     def kill(self):

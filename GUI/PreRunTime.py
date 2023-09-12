@@ -58,6 +58,8 @@ class PreRunTimePage(tk.Frame):
                 self.controller.show_RunTimePage_lmdp()
             elif mode == "plan":
                 self.controller.show_RunTimePage_plan()
+            elif mode == "mdp":
+                self.controller.show_RunTimePage_mdp()
         else:
             msgbox.showerror("check your files", "Please, check the .tdl file and try again.")
             self.controller.show_mainPage()

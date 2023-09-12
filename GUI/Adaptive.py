@@ -2,6 +2,7 @@ from tkinter import ttk
 import tkinter as tk
 from GUI.RunTime_lmdp import RunTimePage_lmdp
 from GUI.RunTime_plan import RunTimePage_plan
+from GUI.RunTime_mdp import RunTimePage_mdp
 from GUI.PreRunTime import PreRunTimePage
 from GUI.DesignTime import DesignTime
 from tkinter import filedialog
@@ -38,7 +39,7 @@ class tkinterApp(tk.Tk):
         # initializing frames to an empty array
         self.frames = {} 
         # iterating through a tuple consisting of the different page layouts
-        for F in (StartPage, DesignTime, PreRunTimePage, RunTimePage_lmdp, RunTimePage_plan):
+        for F in (StartPage, DesignTime, PreRunTimePage, RunTimePage_lmdp, RunTimePage_plan, RunTimePage_mdp):
             frame = F(container, self)
             
             self.frames[F] = frame
@@ -65,6 +66,12 @@ class tkinterApp(tk.Tk):
 
     def get_RunTimePage_plan(self):
         return self.frames[RunTimePage_plan]
+    
+    def show_RunTimePage_mdp(self):
+        self.show_frame(RunTimePage_mdp)
+
+    def get_RunTimePage_mdp(self):
+        return self.frames[RunTimePage_mdp]
     
 
     def getFrame(self, cont):
